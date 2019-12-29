@@ -9,15 +9,15 @@ from ProjectML.proceduralSuccess.classification import *
 from ProjectML.proceduralSuccess.feature_processing import *
 
 DT_FILENAME = "../dataset/RISPEVA_dataset_for_ML.xlsx"
-DT_KNN = "../dataset/KNN.xlsx"
+DT_IMPUTATION = "../dataset/imputed_KNN.xlsx"
 
-dt = my_l_extract_feature(DT_KNN, 'ProceduralSuccess')
-# dt = imputation(dt, 'ProceduralSuccess')[0]
+dt = my_l_extract_feature(DT_IMPUTATION, 'ProceduralSuccess')
+#dt = imputation(dt, 'ProceduralSuccess')[0]
 
 
-dt, dt_test = extract_test(dt, 'ProceduralSuccess', 0.20, 0.10)
-dt_test_X = dt_test.loc[:, 'CenterID':'P2Y12 inhibt']
-dt_test_y = dt_test.loc[:, 'ProceduralSuccess']
+dt, dt_test = extract_test(dt, 'ProceduralSuccess', 0.10, 0.20)
+X_test = dt_test.loc[:, 'CenterID':'P2Y12 inhibt']
+y_test = dt_test.loc[:, 'ProceduralSuccess']
 
 X, y, dt = rebalance(dt, 'ProceduralSuccess')
 result = feature_importance(X, y, 30)
@@ -27,13 +27,11 @@ X = X.loc[:, result]
 # result=feature_selection(X,y)
 # X = X.loc[:, result]
 
+clf = ensemble_stacking(X, y)
+clf2 = ensemble_random_forest(X, y)
+y_pred_stack = clf.predict(X_test.loc[:, result])
+y_pred_random = clf2.predict(X_test.loc[:, result])
 
-X_train, X_test, y_train, y_test = my_l_split(X, y)
-clf = ensemble_stacking(X_train, y_train)
-clf2 = ensemble_random_forest(X_train, y_train)
-y_pred_stack = clf.predict(dt_test_X.loc[:, result])
-y_pred_random = clf2.predict(dt_test_X.loc[:, result])
+print(report(y_pred_stack, y_test))
 
-print(report(y_pred_stack, dt_test_y))
-
-print(report(y_pred_random, dt_test_y))
+print(report(y_pred_random, y_test))

@@ -65,5 +65,5 @@ def imputation(dataset, label_name):
     dataset = my_l_imp("KNN", dataset)[0]
     print(dataset[dataset.isna().any(axis=1)])
     dataset[binary_cols] = dataset[binary_cols].round()
-    dataset.to_excel('../dataset/KNN.xlsx')
+    dataset.to_excel('../dataset/imputed_KNN.xlsx')
     return dataset, row_removed

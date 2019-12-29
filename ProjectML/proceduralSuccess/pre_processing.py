@@ -21,9 +21,9 @@ def extract_label(dataset,label_name,label,percent):
     dataset = dataset.drop(index=y_is_dead_test.index.tolist())
     return dataset, y_is_dead_test
 
-def extract_test(dataset,label_name, percent_dead,percent_alive) :
-    dataset,dataset_dead=extract_label(dataset, label_name, 1,percent_dead)
-    dataset,dataset_alive=extract_label(dataset,label_name, 0,percent_alive)
+def extract_test(dataset,label_name, percent_minor,percent_major) :
+    dataset,dataset_dead=extract_label(dataset, label_name, 1, percent_major)
+    dataset,dataset_alive=extract_label(dataset,label_name, 0, percent_minor)
     return dataset,pd.concat([dataset_alive,dataset_dead])
 
 
@@ -31,6 +31,6 @@ def extract_test(dataset,label_name, percent_dead,percent_alive) :
 def rebalance(dataset,label_name):
     X = dataset.loc[:, 'CenterID':'P2Y12 inhibt']
     y = dataset.loc[:, label_name]
-    dataset, X, y  = my_l_rebalance(X, y, 0.5)
+    dataset, X, y  = my_l_rebalance(X, y, 0.7)
     return X, y, dataset
 
