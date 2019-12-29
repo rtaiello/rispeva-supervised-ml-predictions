@@ -14,6 +14,7 @@ DT_KNN = "../dataset/KNN.xlsx"
 dt = my_l_extract_feature(DT_KNN, 'ProceduralSuccess')
 # dt = imputation(dt, 'ProceduralSuccess')[0]
 
+
 dt, dt_test = extract_test(dt, 'ProceduralSuccess', 0.20, 0.10)
 dt_test_X = dt_test.loc[:, 'CenterID':'P2Y12 inhibt']
 dt_test_y = dt_test.loc[:, 'ProceduralSuccess']
