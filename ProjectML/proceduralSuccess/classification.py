@@ -7,6 +7,7 @@ import numpy as np
 from sklearn import svm
 from sklearn.ensemble import BaggingClassifier, RandomForestClassifier, AdaBoostClassifier, VotingClassifier, \
     RandomForestRegressor, StackingClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
@@ -62,9 +63,9 @@ def ensemble_voting(X_train,y_train):
     return clf
 
 def ensemble_stacking(X_train, y_train):
-    estimators = [('rf', RandomForestClassifier(n_estimators=300, min_samples_leaf=0.12, random_state=42)),('svr',
+    estimators = [('dt', DecisionTreeClassifier()),('svm',
                     make_pipeline(StandardScaler(), svm.SVC(random_state=42)))]
-    clf = StackingClassifier( estimators = estimators, final_estimator = DecisionTreeClassifier())
+    clf = StackingClassifier(estimators = estimators, final_estimator = LogisticRegression())
     clf.fit(X_train, y_train)
     return clf
 
