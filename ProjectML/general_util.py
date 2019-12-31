@@ -53,7 +53,7 @@ def my_l_f1_scores(clf,X,y):
 
 def my_l_split(X,y):
 
-    X_train, X_test, y_train, y_test = train_test_split(X,y.astype('int'), test_size=0.15,random_state=SEED)
+    X_train, X_test, y_train, y_test = train_test_split(X,y.astype('int'), stratify=y,random_state=SEED)
     return X_train, X_test, y_train, y_test
 
 def imputation(dataset, label_name):

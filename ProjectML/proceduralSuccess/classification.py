@@ -29,9 +29,7 @@ def ensemble_bagging(X_train, y_train):
     return clf
 
 def ensemble_random_forest(X_train, y_train):
-
-    clf = RandomForestClassifier(n_estimators=300,
-                               min_samples_leaf=0.12,
+    clf = RandomForestClassifier(n_estimators=300,criterion='entropy',max_depth=20,n_jobs=-1,
                                random_state=SEED)
     # Fit 'rf' to the training set
     clf.fit(X_train, y_train)
@@ -49,8 +47,8 @@ def ensemble_ada_boosting(X_train, y_train):
     return clf
 
 def svm_classifier(X_train,y_train):
-    x_scaled = StandardScaler().fit_transform(X_train)
-    clf = svm.SVC().fit(X_train, y_train)
+    # x_scaled = StandardScaler().fit_transform(X_train)
+    clf = svm.LinearSVC().fit(X_train, y_train)
     return clf
 
 def ensemble_voting(X_train,y_train):
@@ -65,7 +63,7 @@ def ensemble_voting(X_train,y_train):
 def ensemble_stacking(X_train, y_train):
     estimators = [('dt', DecisionTreeClassifier()),('svm',
                     make_pipeline(StandardScaler(), svm.SVC(random_state=42)))]
-    clf = StackingClassifier(estimators = estimators, final_estimator = LogisticRegression())
+    clf = StackingClassifier(estimators = estimators, final_estimator = DecisionTreeClassifier())
     clf.fit(X_train, y_train)
     return clf
 
