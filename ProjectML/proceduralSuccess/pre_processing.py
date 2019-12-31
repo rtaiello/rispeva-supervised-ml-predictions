@@ -31,6 +31,6 @@ def extract_test(dataset,label_name, percent_dead,percent_alive) :
 def rebalance(dataset,label_name):
     X = dataset.loc[:, 'CenterID':'P2Y12 inhibt']
     y = dataset.loc[:, label_name]
-    dataset, X, y  = my_l_rebalance(X, y, 0.5)
+    #dataset, X, y  = my_l_rebalance(X, y, 0.0)
     return X, y, dataset
 
