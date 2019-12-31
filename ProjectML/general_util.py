@@ -34,9 +34,10 @@ def my_l_imp(types,dataset):
 def my_l_rebalance(X,y, percent):
     #rus = RandomUnderSampler(sampling_strategy=0.06, random_state=42)
     #X_res, y_res = rus.fit_resample(X, y)
-
-    X_resampled, y_resampled = SMOTE(sampling_strategy=percent, random_state=42, k_neighbors=3).fit_resample(X, y)
+    X_resampled, y_resampled = SMOTE(sampling_strategy=percent, random_state=42, k_neighbors=5).fit_resample(X, y)
+    print("Label 1:")
     print(y_resampled[y_resampled==1].shape)
+    print("Label 0:")
     print(y_resampled[y_resampled == 0].shape)
     dataset =  pd.concat([X_resampled, y_resampled], axis=1, sort=False)
     return dataset,X_resampled,y_resampled
