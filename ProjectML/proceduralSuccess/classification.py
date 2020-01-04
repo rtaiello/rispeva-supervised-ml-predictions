@@ -5,8 +5,7 @@
 #third part lib
 import numpy as np
 from sklearn import svm
-from sklearn.ensemble import BaggingClassifier, RandomForestClassifier, AdaBoostClassifier, VotingClassifier, \
-    RandomForestRegressor, StackingClassifier
+from sklearn.ensemble import BaggingClassifier, RandomForestClassifier, AdaBoostClassifier, VotingClassifier, RandomForestRegressor, StackingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
@@ -37,12 +36,8 @@ def ensemble_random_forest(X_train, y_train):
     return clf
 
 def ensemble_ada_boosting(X_train, y_train):
-    classifier = [('Random Forest', RandomForestClassifier(n_estimators=300,
-                                                            min_samples_leaf=0.12,
-                                                            random_state=SEED)),
-                   ('SVM Classifier', svm.SVC(probability=True, kernel='linear'))]
-
-    clf = AdaBoostClassifier(base_estimator=classifier, n_estimators=100)
+    classifier = DecisionTreeClassifier(random_state=SEED)
+    clf = AdaBoostClassifier(base_estimator=classifier, n_estimators=300)
     clf.fit(X_train, y_train)
     return clf
 

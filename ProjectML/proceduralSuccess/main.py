@@ -26,6 +26,7 @@ X_train = X_train.loc[:, mask]
 X_test = X_test.loc[:, mask]
 
 clf = ensemble_random_forest(X_train, y_train)
+#clf = ensemble_ada_boosting(X_train, y_train)
 #clf= svm_classifier(X_train, y_train)
 y_pred_stack = clf.predict(X_test)
 print(report(y_pred_stack, y_test))
