@@ -17,13 +17,13 @@ dt = my_l_extract_feature(DT_KNN, LABEL)
 X = dt.loc[:, 'CenterID':'P2Y12 inhibt']
 y = y = dt.loc[:, LABEL]
 
-mask = feature_variance(X)  #imposing threshold to features' variance
-X = X.loc[:, mask]
+#mask = feature_variance(X)  #imposing threshold to features' variance
+#X = X.loc[:, mask]
 
 X_train, X_test, y_train, y_test = my_l_split(X, y)
-mask = voting_feature_selection(X_train, y_train)
-X_train = X_train.loc[:, mask]
-X_test = X_test.loc[:, mask]
+#mask = voting_feature_selection(X_train, y_train)
+#X_train = X_train.loc[:, mask]
+#X_test = X_test.loc[:, mask]
 
 clf = ensemble_random_forest(X_train, y_train)
 #clf = ensemble_ada_boosting(X_train, y_train)

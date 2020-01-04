@@ -28,7 +28,7 @@ def ensemble_bagging(X_train, y_train):
     return clf
 
 def ensemble_random_forest(X_train, y_train):
-    clf = RandomForestClassifier(n_estimators=300,criterion='entropy',max_depth=20,n_jobs=-1,
+    clf = RandomForestClassifier(n_estimators=10,criterion='gini',max_depth=30,max_features=60,n_jobs=-1,
                                random_state=SEED)
     # Fit 'rf' to the training set
     clf.fit(X_train, y_train)
