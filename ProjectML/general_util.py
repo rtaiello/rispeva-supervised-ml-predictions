@@ -1,4 +1,5 @@
 # Standard lib
+import os
 from os import sep
 
 # Our import
@@ -21,7 +22,7 @@ def my_l_extract_feature(dataset, label):
 
 
 def my_l_read(filename):
-    print(filename)
+    print(os.getcwd())
     dataset = pd.read_excel(filename)
     return dataset
 
@@ -62,8 +63,7 @@ def imputation(dataset, label):
     col_removed = d_month_mean_null[d_month_mean_null >= 60.0].index.tolist()
     dataset = dataset.drop(columns=col_removed)
     binary_cols = [col for col in dataset if np.isin(dataset[col].dropna().unique(), [0.0, 1.0]).all()]
-    dataset = my_l_imp_KNN("KNN", dataset)[0]
+    dataset = my_l_imp_KNN(dataset)[0]
     print(dataset[dataset.isna().any(axis=1)])
     dataset[binary_cols] = dataset[binary_cols].round()
-    dataset.to_excel('../dataset/KNN.xlsx')
     return dataset, row_removed

@@ -10,19 +10,19 @@ from ProjectML.evaluation import *
 # Third part lib
 
 # Constant
-DONE_imputation = False
-DATASET_FILENAME = 'dataset/RISPEVA_dataset.xlsx'
-DATASET_IMPUTATION = "dataset/imputation_1MD.xlsx"
-LABEL = '1 moth Death'
+DONE_imputation = True
+DATASET_FILENAME = '../dataset/RISPEVA_dataset.xlsx'
+DATASET_IMPUTATION = "../dataset/imputation_1MD.xlsx"
+LABEL = '1 month Death'
 
 dataset = None
 # ---------- init imputation ----------
 if not DONE_imputation:
     dataset = my_l_read(DATASET_FILENAME)
-    dataset, row_removed = imputation(dataset)
+    dataset, row_removed = imputation(dataset, label=LABEL)
     dataset.to_excel(DATASET_IMPUTATION)
     print("IMPUTATION DONE!")
-    print("Row removed:"+row_removed)
+
 else:
     dataset = my_l_read(DATASET_IMPUTATION)
 # ---------- end imputation ----------
@@ -32,12 +32,12 @@ dataset = my_l_extract_feature(dataset, label=LABEL)
 
 # ---------- init split validation ----------
 dataset, dataset_validation = extract_test(dataset,percent_dead= 0.22, percent_alive= 0.03)
-dt_test_X=dataset_validation.loc[:,'CenterID':'P2Y12 inhibt']
-dt_test_y=dataset_validation.loc[:, LABEL]
+X_validation = dataset_validation.loc[:,'CenterID':'P2Y12 inhibt']
+y_validation = dataset_validation.loc[:, LABEL]
 # ---------- end split validation ----------
 
 # ---------- init rebalance ----------
-X, y, dataset = rebalance(dataset, percent=0.12)
+X, y, dataset = rebalance(dataset, percent=1)
 # ---------- end rebalance ----------
 
 # ---------- init f. importance ----------
@@ -51,8 +51,11 @@ svm = svm_classifier(X, y)
 random_forest = ensemble_random_forest(X, y)
 
 y_pred_svm=svm.predict(X_test)
-y_pred_random_forest=random_forest.predict(X_train)
+y_pred_random_forest=random_forest.predict(X_test)
 
-print(report(y_pred_random_forest,y_test))
+print("SVM's prediction:")
+print(report(y_test, y_pred_svm))
 
+print("Random Forest's prediction")
+print(report(y_test, y_pred_random_forest))
 
