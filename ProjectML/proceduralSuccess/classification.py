@@ -19,9 +19,7 @@ def decision_tree_classifier(X_train, y_train):
     return clf
 
 def ensemble_bagging(X_train, y_train):
-    classifier = RandomForestClassifier(n_estimators=100,
-                                min_samples_leaf=.12,
-                                random_state=SEED,
+    classifier = RandomForestClassifier(n_estimators=100,random_state=SEED,
                                 n_jobs=-1)
     clf = BaggingClassifier(base_estimator=classifier, n_estimators=100, n_jobs=-1)
     clf.fit(X_train, y_train)
@@ -29,27 +27,18 @@ def ensemble_bagging(X_train, y_train):
 
 def ensemble_random_forest(X_train, y_train):
 
-    clf = RandomForestClassifier(n_estimators=300,
-                               min_samples_leaf=0.12,
-                               random_state=SEED)
-    # Fit 'rf' to the training set
+    clf = RandomForestClassifier(n_estimators=300, random_state=SEED)
     clf.fit(X_train, y_train)
-    # Predict the test set labels 'y_pred'
     return clf
 
 def ensemble_ada_boosting(X_train, y_train):
-    classifier = [('Random Forest', RandomForestClassifier(n_estimators=300,
-                                                            min_samples_leaf=0.12,
-                                                            random_state=SEED)),
-                   ('SVM Classifier', svm.SVC(probability=True, kernel='linear'))]
-
-    clf = AdaBoostClassifier(base_estimator=classifier, n_estimators=100)
+    clf = AdaBoostClassifier(n_estimators=200, algorithm='SAMME')
     clf.fit(X_train, y_train)
     return clf
 
 def svm_classifier(X_train,y_train):
-    x_scaled = StandardScaler().fit_transform(X_train)
-    clf = svm.SVC().fit(X_train, y_train)
+    X_scaled = StandardScaler().fit_transform(X_train)
+    clf = svm.SVC().fit(X_scaled, y_train)
     return clf
 
 def ensemble_voting(X_train,y_train):
@@ -57,18 +46,13 @@ def ensemble_voting(X_train,y_train):
                                                             min_samples_leaf=0.12,
                                                             random_state=SEED)),
                    ('SVM Classifier', svm.SVC(probability=True))]
-    clf = VotingClassifier(estimators=classifiers,voting='soft',n_jobs=-1,weights=[1.5, 2])
+    clf = VotingClassifier(estimators=classifiers,voting='soft',n_jobs=-1)
     clf.fit(X_train, y_train)
     return clf
 
 def ensemble_stacking(X_train, y_train):
     estimators = [('rf', RandomForestClassifier(n_estimators=300, min_samples_leaf=0.12, random_state=42)),('svr',
                     make_pipeline(StandardScaler(), svm.SVC(random_state=42)))]
-    clf = StackingClassifier( estimators = estimators, final_estimator = DecisionTreeClassifier())
+    clf = StackingClassifier( estimators = estimators, final_estimator = svm.SVC())
     clf.fit(X_train, y_train)
     return clf
-
-def my_voting(clf1,clf2,X_test) :
-    y_pred_1 = clf1.predict(X_test)
-    y_pred_2 = clf2.predict(X_test)
-    return np.logical_or (y_pred_1, y_pred_2)

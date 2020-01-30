@@ -1,48 +1,58 @@
-# std lib
+# Standard lib
 
-#  import foo
-from sklearn.manifold import TSNE
-
+# Our import
 from ProjectML.general_util import *
-from ProjectML.monthDeath.pre_processing import *
-from ProjectML.monthDeath.evaluation import *
+from ProjectML.monthDeath.pre_processing.pre_processing import *
 from ProjectML.monthDeath.classification import *
-from ProjectML.monthDeath.feature_processing import *
-import ProjectML.monthDeath.plot_confusion_matrix
-DT_FILENAME = "dataset/RISPEVA_dataset_for_ML.xlsx"
-DT_KNN = "dataset/knn.xlsx"
+from ProjectML.monthDeath.pre_processing.feature_processing import *
+from ProjectML.evaluation import *
 
-dt = my_l_extract_feature(DT_KNN,'1 month Death')
+# Third part lib
 
+# Constant
+DONE_imputation = False
+DATASET_FILENAME = 'dataset/RISPEVA_dataset.xlsx'
+DATASET_IMPUTATION = "dataset/imputation_1MD.xlsx"
+LABEL = '1 moth Death'
 
+dataset = None
+# ---------- init imputation ----------
+if not DONE_imputation:
+    dataset = my_l_read(DATASET_FILENAME)
+    dataset, row_removed = imputation(dataset)
+    dataset.to_excel(DATASET_IMPUTATION)
+    print("IMPUTATION DONE!")
+    print("Row removed:"+row_removed)
+else:
+    dataset = my_l_read(DATASET_IMPUTATION)
+# ---------- end imputation ----------
 
-# dt = imputation(dt)[0]
+# ---------- pick features ----------
+dataset = my_l_extract_feature(dataset, label=LABEL)
 
-dt, dt_test = extract_test(dt,0.22,0.03)
-dt_test_X=dt_test.loc[:,'CenterID':'P2Y12 inhibt']
-dt_test_y=dt_test.loc[:,'1 month Death']
+# ---------- init split validation ----------
+dataset, dataset_validation = extract_test(dataset,percent_dead= 0.22, percent_alive= 0.03)
+dt_test_X=dataset_validation.loc[:,'CenterID':'P2Y12 inhibt']
+dt_test_y=dataset_validation.loc[:, LABEL]
+# ---------- end split validation ----------
 
+# ---------- init rebalance ----------
+X, y, dataset = rebalance(dataset, percent=0.12)
+# ---------- end rebalance ----------
 
-print(dt.var()<0.5)
-
-X, y, dt = rebalance(dt)
-
+# ---------- init f. importance ----------
 result = feature_importance(X,y,25)
 result = (list(list(zip(*result))[0]))
 X = X.loc[:, result]
+# ---------- end f. importance ----------
 
-# result=feature_selection(X,y)
-# X = X.loc[:, result]
+X_train, X_test, y_train, y_test = my_l_split(X, y)
+svm = svm_classifier(X, y)
+random_forest = ensemble_random_forest(X, y)
+
+y_pred_svm=svm.predict(X_test)
+y_pred_random_forest=random_forest.predict(X_train)
+
+print(report(y_pred_random_forest,y_test))
 
 
-
-X_train, X_test, y_train, y_test = my_l_split(X,y)
-clf = svm_classifier(X_train,y_train)
-clf2 = ensemble_random_forest(X_train,y_train)
-y_pred_svm=clf.predict(dt_test_X.loc[:,result])
-y_pred_random=clf2.predict(dt_test_X.loc[:,result])
-
-predictions = y_pred_random-y_pred_svm
-difference = predictions[np.where(predictions!=0)]
-
-#print(report(y_pred_random,y_test))

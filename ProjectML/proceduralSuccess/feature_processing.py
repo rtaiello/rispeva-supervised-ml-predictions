@@ -24,15 +24,15 @@ def feature_selection(X,y) :
     rfe.fit(X,y)
     return rfe.support_
 
-def voting_feature_selection(X_train,y_train):
+def voting_feature_selection(X_train,y_train, n_features):
 
     rfe_rf = RFE(estimator=RandomForestClassifier(),
-                 n_features_to_select=66, step=5, verbose=1)
+                 n_features_to_select=n_features, step=5, verbose=1)
     rfe_rf.fit(X_train, y_train)
     rf_mask = rfe_rf.support_
 
     rfe_gb = RFE(estimator=GradientBoostingClassifier(),
-                 n_features_to_select=66, step=5, verbose=1)
+                 n_features_to_select=n_features, step=5, verbose=1)
     rfe_gb.fit(X_train, y_train)
     gb_mask = rfe_gb.support_
 
@@ -45,6 +45,8 @@ def voting_feature_selection(X_train,y_train):
 
     mask = votes >=2
     return mask;
+
+
 def feature_variance(X):
     sel = VarianceThreshold(threshold=0.005)
     sel.fit(X / X.mean())

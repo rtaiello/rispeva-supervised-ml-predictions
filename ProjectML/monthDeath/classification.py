@@ -66,8 +66,3 @@ def ensemble_stacking(X_train, y_train):
     clf = StackingClassifier( estimators = estimators, final_estimator = DecisionTreeClassifier())
     clf.fit(X_train, y_train)
     return clf
-
-def my_voting(clf1,clf2,X_test) :
-    y_pred_1 = clf1.predict(X_test)
-    y_pred_2 = clf2.predict(X_test)
-    return np.logical_or (y_pred_1, y_pred_2)

@@ -21,12 +21,13 @@ mask = feature_variance(X)
 X = X.loc[:, mask]
 
 X_train, X_test, y_train, y_test = my_l_split(X, y)
-mask = voting_feature_selection(X_train, y_train)
+mask = voting_feature_selection(X_train, y_train,63)
 X_train = X_train.loc[:, mask]
 X_test = X_test.loc[:, mask]
 
-clf = ensemble_stacking(X_train, y_train)
-y_pred_stack = clf.predict(X_test)
-print(report(y_pred_stack, y_test))
-#
-# print(report(y_pred_random, dt_test_y))
+
+clf = ensemble_random_forest(per uX_train,y_train)
+
+y_pred = clf.predict(X_test)
+print(report(y_pred, y_test))
+
