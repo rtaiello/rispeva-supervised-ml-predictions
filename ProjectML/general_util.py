@@ -18,7 +18,7 @@ def my_l_extract_feature(dataset, label):
     X_month_death = dataset.loc[:, 'CenterID':'P2Y12 inhibt']
     y_month_death = dataset.loc[:, label]
 
-    return pd.concat([X_month_death, y_month_death], axis=1, sort=False)
+    return X_month_death, y_month_death, pd.concat([X_month_death, y_month_death], axis=1, sort=False)
 
 
 def my_l_read(filename):
@@ -50,9 +50,9 @@ def my_l_f1_scores(clf, X, y):
     return cross_val_score(clf, X, y, cv=5, scoring='f1')
 
 
-def my_l_split(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y.astype('int'), test_size=0.25, random_state=SEED,
-                                                        stratify=y)
+def my_l_split(X, y, split_percent):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=split_percent, random_state=SEED,
+                                                        stratify=y,shuffle=True)
     return X_train, X_test, y_train, y_test
 
 
