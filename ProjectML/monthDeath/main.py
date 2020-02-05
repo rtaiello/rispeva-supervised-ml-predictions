@@ -2,6 +2,7 @@
 
 # Our import
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import LassoCV
 from sklearn.metrics import precision_score, recall_score, f1_score
 
 from ProjectML.general_util import *
@@ -13,18 +14,20 @@ from ProjectML.evaluation import *
 
 # Third part lib
 from sklearn import svm
+from sklearn.preprocessing import Normalizer
+from sklearn.ensemble import GradientBoostingClassifier
+import matplotlib.pyplot as plt
 
 # Constant
 DONE_imputation = True
 DATASET_FILENAME = '../dataset/RISPEVA_dataset.xlsx'
 DATASET_IMPUTATION = "../dataset/imputation_1MD.xlsx"
 LABEL = '1 month Death'
-
 dataset = None
 # ---------- init imputation ----------
 if not DONE_imputation:
     dataset = my_l_read(DATASET_FILENAME)
-    dataset, row_removed = imputation(dataset, label=LABEL)
+    dataset = imputation(dataset, label=LABEL)
     dataset.to_excel(DATASET_IMPUTATION)
     print("IMPUTATION DONE!")
 
@@ -45,36 +48,18 @@ print("Percent of death in original dataset= {0:.2f}".format(y[y==1].count()/y.c
 print("Percent of death in test set= {0:.2f}".format(y_test[y_test==1].count()/y_test.count()))
 print("Percent of death in validation set= {0:.2f}".format(y_val[y_val==1].count()/y_val.count()))
 
+#get continuos features, with variance grater than 1
 
-#DA CUI CREARE UNA BASELINE CON SVM
+X_train, X_val   = my_l_std_scaling(X_train,X_val)
+
+X_res, y_res = over_sampling(X_train,y_train)
+
+clf = ensemble_ada_boosting(X_res,y_res)
+
+y_pred = clf.predict(X_val)
+print(report(y_val,y_pred))
+# ---------- init f. importance ----------
+
+# ---------- end f. importance ----------
 
 
-# ---------- init Classifiers ----------
-svm = svm_classifier(X_train, y_train)
-random_forest = ensemble_random_forest(X_train, y_train)
-ada_boost = ensemble_ada_boosting(X_train, y_train)
-# ---------- end Classifiers ----------
-#
-# ---------- init SVM ----------
-y_pred_svm=svm.predict(X_test)
-# ---------- end SVM ----------
-#
-# ---------- init Random Forest ----------
-y_pred_random_forest=random_forest.predict(X_test)
-# ---------- end Random Forest ----------
-#
-# ---------- init Boosting ----------
-#y_pred_boosting=ada_boost.predict(X_val)
-# ---------- end Boosting ----------
-
-print("SVM's prediction:")
-print(report(y_test, y_pred_svm))
-
-print("Random Forest's prediction")
-print(report(y_test, y_pred_random_forest))
-
-print("Ada Boost's prediction")
-print(report(y_val, y_pred_boosting))
-
-print("MLP's prediction")
-print(report(y_test, y_pred_mlp))
