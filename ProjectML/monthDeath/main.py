@@ -19,15 +19,15 @@ from sklearn.ensemble import GradientBoostingClassifier
 import matplotlib.pyplot as plt
 
 # Constant
-DONE_imputation = True
-DATASET_FILENAME = '../dataset/RISPEVA_dataset.xlsx'
+DONE_imputation = False
+DATASET_FILENAME = '../dataset/RISPEVA_dataset_for_ML.xlsx'
 DATASET_IMPUTATION = "../dataset/imputation_1MD.xlsx"
 LABEL = '1 month Death'
 dataset = None
 # ---------- init imputation ----------
 if not DONE_imputation:
     dataset = my_l_read(DATASET_FILENAME)
-    dataset = imputation(dataset, label=LABEL)
+    dataset = imputation(dataset)
     dataset.to_excel(DATASET_IMPUTATION)
     print("IMPUTATION DONE!")
 
@@ -50,9 +50,9 @@ print("Percent of death in validation set= {0:.2f}".format(y_val[y_val==1].count
 
 #get continuos features, with variance grater than 1
 
-X_train, X_val   = my_l_std_scaling(X_train,X_val)
+X_scaled_train, X_scaled_val = my_l_std_scaling(X_train, X_val)
 
-X_res, y_res = over_sampling(X_train,y_train)
+X_res, y_res = my_l_rebalance(X_scaled_train,y_train,0.5)
 
 clf = ensemble_ada_boosting(X_res,y_res)
 
