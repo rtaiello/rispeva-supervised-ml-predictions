@@ -4,12 +4,9 @@
 from ProjectML.general_util import my_l_imp, my_l_rebalance
 # third part
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import *
 import pandas as pd
 import numpy as np
-
-
-
-
 
 def extract_label(dataset,label_name,label,percent):
     is_dead = dataset[dataset[label_name] == label]
@@ -32,4 +29,10 @@ def rebalance(dataset,label_name):
     y = dataset.loc[:, label_name]
     dataset, X, y  = my_l_rebalance(X, y, 0.7)
     return X, y, dataset
+
+
+def scaleColumns(df, cols_to_scale):
+    for col in cols_to_scale:
+        df[col] = pd.DataFrame(StandardScaler().fit_transform(pd.DataFrame(df[col])), columns=[col])
+    return df
 

@@ -25,24 +25,18 @@ def feature_selection(X,y) :
     return rfe.support_
 
 def voting_feature_selection(X_train,y_train):
-
     rfe_rf = RFE(estimator=RandomForestClassifier(),
-                 n_features_to_select=66, step=5, verbose=1)
+                 n_features_to_select=30, step=5, verbose=1)
     rfe_rf.fit(X_train, y_train)
     rf_mask = rfe_rf.support_
-
     rfe_gb = RFE(estimator=GradientBoostingClassifier(),
-                 n_features_to_select=66, step=5, verbose=1)
+                 n_features_to_select=30, step=5, verbose=1)
     rfe_gb.fit(X_train, y_train)
     gb_mask = rfe_gb.support_
-
     lcv = LassoCV()
     lcv.fit(X_train, y_train)
-
     lcv_mask = lcv.coef_ != 0
-
     votes = np.sum([lcv_mask, rf_mask, gb_mask], axis=0)
-
     mask = votes >=2
     return mask;
 
@@ -66,6 +60,8 @@ def cor_selector(X, y, num_feats):
     cor_feature = X.iloc[:,np.argsort(np.abs(cor_list))[-num_feats:]].columns.tolist()
     # feature selection? 0 for not select, 1 for select
     cor_support = [True if i in cor_feature else False for i in feature_name]
-    return cor_support, cor_feature
+    return cor_support, cor_feature, cor_list
+
+
 
 
