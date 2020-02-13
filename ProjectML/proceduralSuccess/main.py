@@ -2,13 +2,12 @@
 
 #
 
-from ProjectML.general_util import *
-from ProjectML.proceduralSuccess.pre_processing import *
+from ProjectML.general_util.general_util import *
 from ProjectML.proceduralSuccess.evaluation import *
 from ProjectML.proceduralSuccess.classification import *
 from ProjectML.proceduralSuccess.feature_processing import *
 
-DT_FILENAME = "../dataset/RISPEVA_dataset_for_ML.xlsx"
+DT_FILENAME = "../../dataset/RISPEVA_dataset_for_ML.xlsx"
 DT_KNN = "../dataset/KNN.xlsx"
 LABEL = 'ProceduralSuccess'
 

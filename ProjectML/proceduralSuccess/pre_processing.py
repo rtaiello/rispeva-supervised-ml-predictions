@@ -1,14 +1,9 @@
 # std lib
 
 # my lib
-from ProjectML.general_util import my_l_imp, my_l_rebalance
 # third part
 from sklearn.model_selection import train_test_split
 import pandas as pd
-import numpy as np
-
-
-
 
 
 def extract_label(dataset,label_name,label,percent):
