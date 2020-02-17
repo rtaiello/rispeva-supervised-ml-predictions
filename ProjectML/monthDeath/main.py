@@ -1,10 +1,13 @@
 # my lib
+from ProjectML.monthDeath.pre_processing import imputation, read_dataset, extract_feature
 
-from ProjectML.monthDeath.pre_processing import *
 from ProjectML.monthDeath.feature_extraction import *
-from ProjectML.general_util.pre_processing import *
 from ProjectML.monthDeath.classification import *
+from ProjectML.general_util.pre_processing import *
 from ProjectML.general_util.evaluation import *
+
+# third part
+import pandas as pd
 
 # Constant
 DONE_imputation = True
@@ -34,7 +37,7 @@ X, X_test, y, y_test = my_l_split(X, y, split_percent=0.1)
 # ---------- end split test ----------
 
 # ---------- init split train validation ----------
-X_train, X_val, y_train, y_val = my_l_split(X, y, split_percent=0.2)
+X_train, X_val, y_train, y_val = my_l_split(X, y, split_percent=2 / 9)
 # ---------- end split train validation ----------
 
 print("Percent of death in original dataset= {0:.2f}".format(y[y == 1].count() / y.count()))

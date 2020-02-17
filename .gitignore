@@ -134,8 +134,6 @@ dmypy.json
 .idea
 
 .DS_Store
-
-./pickle
 ./dataset
 ./img
 

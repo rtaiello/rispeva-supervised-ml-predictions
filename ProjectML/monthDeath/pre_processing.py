@@ -3,13 +3,11 @@
 # my lib
 from ProjectML.general_util.pre_processing import *
 from ProjectML.general_util.imputation import *
+
 # third part
-import pandas as pd
-import numpy as np
 
 # Constant
 LABEL = '1monthDeath'
-from ProjectML.general_util.constant import *
 
 
 def read_dataset(file_path):
@@ -43,11 +41,3 @@ def imputation(dataset):
     dataset[binary_cols] = dataset[binary_cols].astype('bool')
     dataset[interger_cols.columns] = dataset[interger_cols.columns].astype('int64')
     return dataset
-
-
-def rebalance(dataset, percent):
-    X = dataset.loc[:, 'CenterID':'P2Y12 inhibt']
-    y = dataset.loc[:, LABEL]
-    if percent > 0:
-        dataset, X, y = my_l_rebalance(X, y, percent)
-    return X, y, dataset

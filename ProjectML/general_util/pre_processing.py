@@ -3,9 +3,9 @@ import re
 import os
 
 # third part lib
-import pandas as pd
 from sklearn.preprocessing import StandardScaler, Normalizer
 from sklearn.model_selection import train_test_split
+import pandas as pd
 
 # constant
 from ProjectML.general_util.constant import *
