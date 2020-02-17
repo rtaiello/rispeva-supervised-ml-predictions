@@ -53,7 +53,7 @@ X_scaled = pd.read_pickle(SCALED_FEATURES)
 mask, gb_coefs, gb_mask, rf_coefs, rf_mask = voting_feature_selection(X, y)
 X = X.loc[:, mask]
 
-X_scaled = X_scaled.loc[:, mask]
+X_scaled = X_scaled.loc[:, ['CenterID','PatientID']]
 # ---------- end features selection ----------
 
 # ---------- init split test ----------
