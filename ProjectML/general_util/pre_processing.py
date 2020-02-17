@@ -4,12 +4,11 @@ import os
 
 # third part lib
 import pandas as pd
-from sklearn.impute import KNNImputer
-from sklearn.preprocessing import StandardScaler,Normalizer
+from sklearn.preprocessing import StandardScaler, Normalizer
 from sklearn.model_selection import train_test_split
 
 # constant
-SEED = 42
+from ProjectML.general_util.constant import *
 
 
 def my_l_read(filename):
@@ -27,24 +26,19 @@ def my_l_rm_white_space(dataset):
     return dataset
 
 
-def my_l_imp_KNN(dataset):
-    knn_imputer = KNNImputer()
-    dt_knn = dataset.copy(deep=True)
-    dt_knn.iloc[:, :] = knn_imputer.fit_transform(dataset)
-    return dt_knn
-
-
 def my_l_std_scaling(X):
     feature_selected = X.select_dtypes(include=['int64', 'float64'])
     X_scaled = X.copy()
     X_scaled[feature_selected.columns] = StandardScaler().fit_transform(X_scaled[feature_selected.columns])
     return X_scaled
 
+
 def my_l_norm_scaling(X):
     feature_selected = X.select_dtypes(include=['int64', 'float64'])
     X_scaled = X.copy()
     X_scaled[feature_selected.columns] = Normalizer().fit_transform(X_scaled[feature_selected.columns])
     return X_scaled
+
 
 def my_l_split(X, y, split_percent):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=split_percent, random_state=SEED,
