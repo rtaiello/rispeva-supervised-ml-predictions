@@ -76,9 +76,15 @@ def imputation(dataset, label_name):
     col_removed = d_month_mean_null[d_month_mean_null >= 40.0].index.tolist()
     dataset = dataset.drop(columns=col_removed)
 
-    binary_cols = [col for col in dataset if np.isin(dataset[col].dropna().unique(), [0.0, 1.0]).all()]
+    binary_cols = [col for col in dataset if np.isin(dataset[col].dropna().unique(), [0, 1]).all()]
+    dataset[binary_cols] = dataset[binary_cols].astype('bool')
+    integer_cols = dataset.select_dtypes(include=['int64'])
+
     dataset = my_l_imp("KNN", dataset)[0]
+    #dataset[binary_cols] = dataset[binary_cols].round()
+    dataset[binary_cols] = dataset[binary_cols].astype('bool')
+    dataset[integer_cols.columns] = dataset[integer_cols.columns].astype('int64')
+
     print(dataset[dataset.isna().any(axis=1)])
-    dataset[binary_cols] = dataset[binary_cols].round()
     dataset.to_excel('../dataset/imputed_KNN.xlsx')
     return dataset, label_miss

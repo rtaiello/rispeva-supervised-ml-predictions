@@ -37,8 +37,7 @@ def ensemble_bagging(X_train, y_train):
     return clf
 
 def ensemble_random_forest(X_train, y_train):
-    clf = RandomForestClassifier(n_estimators=500, criterion='gini', max_features=20, n_jobs=-1, class_weight='balanced',
-                               random_state=SEED)
+    clf = RandomForestClassifier(n_estimators=500, criterion='gini', max_features=5, n_jobs=-1, class_weight='balanced', random_state=SEED)
     # Fit 'rf' to the training set
     clf.fit(X_train, y_train)
     # Predict the test set labels 'y_pred'
@@ -51,7 +50,7 @@ def ensemble_ada_boosting(X_train, y_train):
     clf.fit(X_train, y_train)
     return clf
 
-def svm_classifier(X_train,y_train):
+def svm_classifier(X_train, y_train):
     #x_scaled = StandardScaler().fit_transform(X_train)
     clf = svm.SVC(C=1000.0, kernel='rbf', class_weight='balanced', max_iter=-1,  random_state=SEED).fit(X_train, y_train)
     return clf
