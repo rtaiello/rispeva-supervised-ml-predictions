@@ -135,3 +135,7 @@ dmypy.json
 
 .DS_Store
 
+./pickle
+./dataset
+./img
+
