@@ -27,12 +27,12 @@ def feature_selection(X, y):
 
 
 def voting_feature_selection(X_train, y_train):
-    rfe_rf = RFE(estimator=RandomForestClassifier(), n_features_to_select=15, step=5, verbose=1)
+    rfe_rf = RFE(estimator=RandomForestClassifier(), n_features_to_select=30, step=5, verbose=1)
     rfe_rf.fit(X_train, y_train)
     rf_mask = rfe_rf.support_
     rf_coefs = rfe_rf.estimator_.feature_importances_
     rfe_gb = RFE(estimator=GradientBoostingClassifier(),
-                 n_features_to_select=15, step=5, verbose=1)
+                 n_features_to_select=30, step=5, verbose=1)
     rfe_gb.fit(X_train, y_train)
     gb_mask = rfe_gb.support_
     gb_coefs = rfe_gb.estimator_.feature_importances_

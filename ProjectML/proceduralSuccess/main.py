@@ -90,27 +90,26 @@ rep_test = classification_report(y_test, y_pred_test)
 
 rep2 = classification_report(y_val_scal, y_pred_val2)
 rep_test2 = classification_report(y_test_scal, y_pred_test2)
-print('Report of RF on val set')
-print(rep)
+print('Report of RF on test set')
+print(rep_test)
 
-print('Report of SVM on val set')
-print(rep2)
+print('Report of SVM on test set')
+print(rep_test2)
 
 # print('Report of ROC score on val set')
 # print(score)
 
-clf = RandomForestClassifier(n_estimators=500, criterion='gini', max_features=5, n_jobs=-1, class_weight='balanced', random_state=SEED)
-skf = StratifiedKFold(n_splits=10)
+clf = svm.SVC(C=100.0, kernel='rbf', class_weight='balanced', max_iter=-1,  random_state=SEED).fit(X_train, y_train)
+skf = StratifiedKFold(n_splits=10, random_state=SEED, shuffle=True)
 f1_list=[]
 train_list = []
 test_list = []
-for train_index, test_index in skf.split(X_train_val, y_train_val):
-    train_list = pd.concat([X_train_val.iloc[train_index.tolist(), :], y_train_val.iloc[train_index.tolist()]],axis=1)
-    test_list = pd.concat([X_train_val.iloc[test_index.tolist(), :],y_train_val.iloc[test_index.tolist()]],axis=1)
-    clf.fit(X_train_val.iloc[train_index.tolist(), :], y_train_val.iloc[train_index.tolist()])
-    y_predicted = clf.predict(X_train_val.iloc[test_index.tolist(), :])
-    f1_list.append(f1_score(abs(y_train_val.iloc[test_index.tolist()]-1), abs(y_predicted-1)))
-
+for train_index, test_index in skf.split(X, y):
+    train_list = pd.concat([X.iloc[train_index.tolist(), :], y.iloc[train_index.tolist()]], axis=1)
+    test_list = pd.concat([X.iloc[test_index.tolist(), :],y.iloc[test_index.tolist()]], axis=1)
+    clf.fit(X.iloc[train_index.tolist(), :], y.iloc[train_index.tolist()])
+    y_predicted = clf.predict(X.iloc[test_index.tolist(), :])
+    f1_list.append(f1_score(abs(y.iloc[test_index.tolist()]-1), abs(y_predicted-1)))
 f1_list=np.array(f1_list)
 print(f1_list)
 print("F1 score (0 class): %0.2f (+/- %0.2f)" % (f1_list.mean(), f1_list.std() * 1.95))
@@ -125,20 +124,14 @@ print("F1 score (0 class): %0.2f (+/- %0.2f)" % (f1_list.mean(), f1_list.std() *
 
 
 #PLOT FEATURES CORRELATIONS
-fig = plt.figure()
-axes = fig.add_axes([0.1, 0.1, 0.8, 0.8]) # left, bottom, width, height (range 0 to 1)#
-axes.plot(roc[0], roc[1])
-axes.set_xlabel('False Positive Rate')
-axes.set_ylabel('True Positive Rate')
-axes.set_title('ROC curve for Random Forest classifier')
-fig.text(0.5, 0.2, r'AUC = %f'%score)
-fig.savefig('ROC_curve_RF.png')
-
-# Update plot object with X/Y axis labels and Figure Title
-#plt.xlabel(X.columns[0], size=14)
-#plt.ylabel(X.columns[1], size=14)
-#plt.title('SVM Decision Region Boundary', size=16)
-#plt.show()
+# fig = plt.figure()
+# axes = fig.add_axes([0.1, 0.1, 0.8, 0.8]) # left, bottom, width, height (range 0 to 1)#
+# axes.plot(roc[0], roc[1])
+# axes.set_xlabel('False Positive Rate')
+# axes.set_ylabel('True Positive Rate')
+# axes.set_title('ROC curve for Random Forest classifier')
+# fig.text(0.5, 0.2, r'AUC = %f'%score)
+# fig.savefig('ROC_curve_RF.png')
 
 
 

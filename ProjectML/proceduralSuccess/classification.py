@@ -52,7 +52,7 @@ def ensemble_ada_boosting(X_train, y_train):
 
 def svm_classifier(X_train, y_train):
     #x_scaled = StandardScaler().fit_transform(X_train)
-    clf = svm.SVC(C=1000.0, kernel='rbf', class_weight='balanced', max_iter=-1,  random_state=SEED).fit(X_train, y_train)
+    clf = svm.SVC(C=100.0, kernel='rbf', class_weight='balanced', max_iter=-1,  random_state=SEED).fit(X_train, y_train)
     return clf
 
 def ensemble_voting(X_train,y_train):
