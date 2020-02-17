@@ -81,11 +81,11 @@ class_0_val = y_val[y_val == False].count()
 class_1_test = y_test[y_test == True].count()
 class_0_test = y_test[y_test == False].count()
 
-clf = ensemble_random_forest(X_train, y_train)
+rf = ensemble_random_forest(X_train, y_train)
 clf2 = svm_classifier(X_train_scal, y_train_scal)
 
-y_pred_val = clf.predict(X_val)
-y_pred_test = clf.predict(X_test)
+y_pred_val = rf.predict(X_val)
+y_pred_test = rf.predict(X_test)
 
 y_pred_val2 = clf2.predict(X_val_scal)
 y_pred_test2 = clf2.predict(X_test_scal)

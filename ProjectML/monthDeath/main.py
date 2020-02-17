@@ -12,7 +12,7 @@ import pandas as pd
 # Constant
 DONE_imputation = True
 DATASET_FILENAME = '../../dataset/RISPEVA_dataset_for_ML.xlsx'
-DATASET_IMPUTATION = "../../pickle/1MD_imputation.pkl"
+DATASET_IMPUTATION = "../../pickle/1MD/1MD_imputation.pkl"
 LABEL = '1monthDeath'
 dataset = None
 # ---------- init imputation ----------
