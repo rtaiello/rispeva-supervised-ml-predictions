@@ -88,12 +88,6 @@ y_pred_test = rf.predict(X_test)
 y_pred_val2 = clf2.predict(X_val_scal)
 y_pred_test2 = clf2.predict(X_test_scal)
 
-roc = roc_curve(y_test, y_pred_test)
-score = roc_auc_score(y_test, y_pred_test)
-
-roc2 = roc_curve(y_val_scal, y_pred_val2)
-score2 = roc_auc_score(y_val_scal, y_pred_val2)
-
 rep = classification_report(y_val, y_pred_val)
 rep_test = classification_report(y_test, y_pred_test)
 
@@ -108,9 +102,18 @@ print(rep_test2)
 # print('Report of ROC score on val set')
 # print(score)
 
+#cross validation f1 score
 clf = RandomForestClassifier(n_estimators=500, criterion='gini', max_features=5, n_jobs=-1, class_weight='balanced',random_state=SEED)
-f1_mean0, f1_std0, f1_mean1, f1_std1 = my_cross_f1(X,y,clf,cv=10)
-print("F1 score (0 class): %0.2f (+/- %0.2f)" % (f1_mean0, f1_std0 * 1.95))
+print("RF: cross validation cv = 10 ")
+f1_mean0, f1_std0, f1_mean1, f1_std1 = my_cross_f1(X, y, clf, cv=10)
+print("f1_score: %0.2f (+/- %0.2f) (class 0)" % (f1_mean0, f1_std0 * 1.95))
+print("f1_score: %0.2f (+/- %0.2f) (class 1)" % (f1_mean1, f1_std1 * 1.95))
+
+clf = svm.SVC(C=100.0, kernel='rbf', class_weight='balanced', max_iter=-1, random_state=SEED)
+print("SVM: cross validation cv = 10 ")
+f1_mean0, f1_std0, f1_mean1, f1_std1 = my_cross_f1(X_scaled, y, clf, cv=10)
+print("f1_score: %0.2f (+/- %0.2f) (class 0)" % (f1_mean0, f1_std0 * 1.95))
+print("f1_score: %0.2f (+/- %0.2f) (class 1)" % (f1_mean1, f1_std1 * 1.95))
 
 # PLOT PAIRPLOT
 
