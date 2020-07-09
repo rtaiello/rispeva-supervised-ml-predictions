@@ -12,13 +12,17 @@ import pandas as pd
 # Constant
 DONE_imputation = True
 DATASET_FILENAME = '../../dataset/RISPEVA_dataset_for_ML.xlsx'
+DATASET_FILENAME = '../../dataset/RISPEVA_1MD_cleaned.csv'
 DATASET_IMPUTATION = "../../pickle/1MD/1MD_imputation.pkl"
 LABEL = '1monthDeath'
 dataset = None
+
+PERCENTAGE_DROP_FEATURE_CORRELATION = 0.6
+
 # ---------- init imputation ----------
 if not DONE_imputation:
     dataset = read_dataset(DATASET_FILENAME)
-    dataset,imputer = imputation(dataset)
+    dataset, imputer = imputation(dataset)
     dataset.to_pickle(DATASET_IMPUTATION)
     print("IMPUTATION DONE!")
 
@@ -28,7 +32,8 @@ else:
 
 # ----------  init features selection----------
 X, y, dataset = extract_feature(dataset)
-X = drop_corr_feature(X, 0.6)
+X = drop_corr_feature(X, PERCENTAGE_DROP_FEATURE_CORRELATION)
+print(X)
 X = best_eight_features(X)
 # ----------  end features selection----------
 
