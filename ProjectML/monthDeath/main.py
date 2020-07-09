@@ -19,6 +19,8 @@ dataset = None
 
 PERCENTAGE_DROP_FEATURE_CORRELATION = 0.6
 
+
+
 # ---------- init imputation ----------
 dataset = read_dataset(DATASET_FILENAME)
 dataset = dataset[dataset['1monthDeath'].notnull()]
