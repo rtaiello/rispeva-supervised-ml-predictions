@@ -18,4 +18,4 @@ def my_l_imp_MICE(dataset):
     mice_imputer = IterativeImputer(random_state=SEED)
     dt_mice = dataset.copy(deep=True)
     dt_mice.iloc[:, :] = mice_imputer.fit_transform(dataset)
-    return dt_mice
+    return dt_mice,mice_imputer

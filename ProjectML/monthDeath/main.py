@@ -18,7 +18,7 @@ dataset = None
 # ---------- init imputation ----------
 if not DONE_imputation:
     dataset = read_dataset(DATASET_FILENAME)
-    dataset = imputation(dataset)
+    dataset,imputer = imputation(dataset)
     dataset.to_pickle(DATASET_IMPUTATION)
     print("IMPUTATION DONE!")
 
@@ -49,8 +49,10 @@ xgb = xgb_classifier(X_train, y_train)
 y_pred = xgb.predict(X_val)
 print(report(y_val, y_pred))
 print("Cross validation cv = 5 ")
-X_full, y_full = pd.concat([X, X_test], axis=0), pd.concat([y, y_test], axis=0)
+X_full, y_full = pd.concat([X_train, X_val], axis=0), pd.concat([y_train, y_val], axis=0)
 balanced_accuracy_score = get_balanced_accuracy(X_full, y_full, xgb)
 print("Balanced accuracy: %0.2f (+/- %0.2f)" % (balanced_accuracy_score.mean(), balanced_accuracy_score.std() * 2))
 f1_score = get_f1_scores(X_full, y_full, xgb)
 print("f1_score: %0.2f (+/- %0.2f)" % (f1_score.mean(), f1_score.std() * 2))
+roc_auc = get_roc_auc(X_full, y_full, xgb)
+print("roc_auc: %0.2f (+/- %0.2f)" % (roc_auc.mean(), roc_auc.std() * 2))

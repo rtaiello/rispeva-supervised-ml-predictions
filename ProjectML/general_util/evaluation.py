@@ -23,6 +23,9 @@ def get_f1_scores(X, y, clf):
     f1_scores = cross_val_score(clf, X, y, cv=5, scoring='f1')
     return f1_scores
 
+def get_roc_auc(X, y, clf):
+    roc_auc = cross_val_score(clf, X, y, cv=5, scoring='roc_auc')
+    return roc_auc
 
 def get_balanced_accuracy(X, y, clf):
     balanced_accuracy = cross_val_score(clf, X, y, cv=5, scoring='balanced_accuracy')

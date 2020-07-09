@@ -5,7 +5,7 @@ from ProjectML.general_util.pre_processing import *
 from ProjectML.general_util.imputation import *
 
 # third part
-
+import numpy as np
 # Constant
 LABEL = '1monthDeath'
 
@@ -36,8 +36,8 @@ def imputation(dataset):
     binary_cols = [col for col in dataset if np.isin(dataset[col].dropna().unique(), [0, 1]).all()]
     dataset[binary_cols] = dataset[binary_cols].astype('bool')
     interger_cols = dataset.select_dtypes(include=['int64'])
-    dataset = my_l_imp_MICE(dataset)
+    dataset,imputer = my_l_imp_MICE(dataset)
     dataset[binary_cols] = dataset[binary_cols].round()
     dataset[binary_cols] = dataset[binary_cols].astype('bool')
     dataset[interger_cols.columns] = dataset[interger_cols.columns].astype('int64')
-    return dataset
+    return dataset,imputer
