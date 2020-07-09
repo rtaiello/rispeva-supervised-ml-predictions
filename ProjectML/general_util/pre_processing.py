@@ -11,9 +11,9 @@ import pandas as pd
 from ProjectML.general_util.constant import *
 
 
-def my_l_read(filename):
+def my_l_read_dataframe(filename: str):
     print(os.getcwd())
-    dataset = pd.read_excel(filename)
+    dataset = pd.read_csv(filename) if filename.endswith(".csv") else pd.read_excel(filename)
     my_l_rm_white_space(dataset)
     return dataset
 

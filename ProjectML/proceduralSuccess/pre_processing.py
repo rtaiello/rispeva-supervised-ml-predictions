@@ -13,7 +13,7 @@ import numpy as np
 LABEL = 'ProceduralSuccess'
 
 def read_dataset(file_path):
-    dataset = my_l_read(file_path)
+    dataset = my_l_read_dataframe(file_path)
     X = dataset.loc[:, 'CenterID':'P2Y12inhibt']
     y = dataset.loc[:, LABEL]
     return pd.concat([X, y], axis=1, sort=False)

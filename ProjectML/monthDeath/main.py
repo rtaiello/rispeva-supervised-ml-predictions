@@ -12,16 +12,29 @@ import pandas as pd
 # Constant
 DONE_imputation = True
 DATASET_FILENAME = '../../dataset/RISPEVA_dataset_for_ML.xlsx'
+DATASET_FILENAME_CSV = '../../dataset/RISPEVA_1MD_cleaned.csv'
 DATASET_IMPUTATION = "../../pickle/1MD/1MD_imputation.pkl"
 LABEL = '1monthDeath'
 dataset = None
+
+PERCENTAGE_DROP_FEATURE_CORRELATION = 0.6
+
 # ---------- init imputation ----------
 dataset = read_dataset(DATASET_FILENAME)
 dataset = dataset[dataset['1monthDeath'].notnull()]
 
 X, y, dataset = extract_feature(dataset)
 
+X = drop_corr_feature(X, PERCENTAGE_DROP_FEATURE_CORRELATION)
+print(X)
+X = best_eight_features(X)
+# ----------  end features selection----------
+
+# ---------- init split test ----------
 X, X_test, y, y_test = my_l_split(X, y, split_percent=0.1)
+# ---------- end split test ----------
+
+# ---------- init split train validation ----------
 X_train, X_val, y_train, y_val = my_l_split(X, y, split_percent=2 / 9)
 
 X_train, col_removed, imputer = imputation(X_train)
