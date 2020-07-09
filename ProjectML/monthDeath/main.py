@@ -16,28 +16,24 @@ DATASET_IMPUTATION = "../../pickle/1MD/1MD_imputation.pkl"
 LABEL = '1monthDeath'
 dataset = None
 # ---------- init imputation ----------
-if not DONE_imputation:
-    dataset = read_dataset(DATASET_FILENAME)
-    dataset,imputer = imputation(dataset)
-    dataset.to_pickle(DATASET_IMPUTATION)
-    print("IMPUTATION DONE!")
+dataset = read_dataset(DATASET_FILENAME)
+dataset = dataset[dataset['1monthDeath'].notnull()]
 
-else:
-    dataset = pd.read_pickle(DATASET_IMPUTATION)
-# ---------- end imputation ----------
-
-# ----------  init features selection----------
 X, y, dataset = extract_feature(dataset)
-X = drop_corr_feature(X, 0.6)
-X = best_eight_features(X)
-# ----------  end features selection----------
 
-# ---------- init split test ----------
 X, X_test, y, y_test = my_l_split(X, y, split_percent=0.1)
-# ---------- end split test ----------
-
-# ---------- init split train validation ----------
 X_train, X_val, y_train, y_val = my_l_split(X, y, split_percent=2 / 9)
+
+X_train, col_removed, imputer = imputation(X_train)
+
+X_test.drop(columns=col_removed, inplace=True)
+
+X_val.drop(columns=col_removed, inplace=True)
+
+X_test.iloc[:,:] = imputer.transform(X_test)
+
+X_val.iloc[:,:] = imputer.transform(X_val)
+
 # ---------- end split train validation ----------
 
 print("Percent of death in original dataset= {0:.2f}".format(y[y == 1].count() / y.count()))
@@ -56,3 +52,8 @@ f1_score = get_f1_scores(X_full, y_full, xgb)
 print("f1_score: %0.2f (+/- %0.2f)" % (f1_score.mean(), f1_score.std() * 2))
 roc_auc = get_roc_auc(X_full, y_full, xgb)
 print("roc_auc: %0.2f (+/- %0.2f)" % (roc_auc.mean(), roc_auc.std() * 2))
+
+xgb = xgb_classifier(X_full, y_full)
+y_pred_proba = xgb.predict_proba(X_test)
+from sklearn.metrics import roc_auc_score
+print("FINAL roc_auc: %0.2f " % roc_auc_score(y_test, y_pred_proba[:,1]))

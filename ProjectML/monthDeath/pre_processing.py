@@ -40,4 +40,4 @@ def imputation(dataset):
     dataset[binary_cols] = dataset[binary_cols].round()
     dataset[binary_cols] = dataset[binary_cols].astype('bool')
     dataset[interger_cols.columns] = dataset[interger_cols.columns].astype('int64')
-    return dataset,imputer
+    return dataset, col_removed, imputer
