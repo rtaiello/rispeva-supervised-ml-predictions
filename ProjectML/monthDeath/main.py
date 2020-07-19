@@ -18,6 +18,29 @@ LABEL = '1monthDeath'
 dataset = None
 
 PERCENTAGE_DROP_FEATURE_CORRELATION = 0.6
+def one_hot_encoding(df_train, categories):
+    import gc
+    import uuid
+    from sklearn.preprocessing import OneHotEncoder
+
+    enc = OneHotEncoder(handle_unknown='ignore')
+
+    enc.fit(df_train[categories])
+    transformed_train = enc.transform(df_train[categories])
+    ohe_columns = [item for sub_array in enc.categories_ for item in sub_array.tolist()]
+    ohe_columns = [("is_{}".format(str(x))).upper() for x in ohe_columns]
+
+    ohe_df = pd.DataFrame(transformed_train.toarray(), columns=ohe_columns)
+    del transformed_train
+    gc.collect()
+    df_train.reset_index(drop=True, inplace=True)
+    ohe_df.reset_index(drop=True, inplace=True)
+
+    df_train = pd.concat([df_train, ohe_df], axis=1).drop(categories, axis=1)
+    # df_train[ohe_columns] = df_train[ohe_columns].astype('bool')
+
+    df_train = my_l_rm_white_space(df_train)
+    return df_train, enc, ohe_columns
 
 
 
@@ -27,9 +50,7 @@ dataset = dataset[dataset['1monthDeath'].notnull()]
 
 X, y, dataset = extract_feature(dataset)
 
-X = drop_corr_feature(X, PERCENTAGE_DROP_FEATURE_CORRELATION)
-print(X)
-X = best_eight_features(X)
+
 # ----------  end features selection----------
 
 # ---------- init split test ----------
@@ -48,7 +69,27 @@ X_val.drop(columns=col_removed, inplace=True)
 X_test.iloc[:,:] = imputer.transform(X_test)
 
 X_val.iloc[:,:] = imputer.transform(X_val)
+CATEGORICAL_FEATURES = ["CenterID"]
+X_train, enc_trasformer, ohe_columns = one_hot_encoding(df_train=X_train, categories=CATEGORICAL_FEATURES)
+X_val_mice = X_val
+transformed_test = enc_trasformer.transform(X_val_mice[CATEGORICAL_FEATURES])
+ohe_df = pd.DataFrame(transformed_test.toarray(), columns=ohe_columns)
+X_val_mice.reset_index(drop=True, inplace=True)
+ohe_df.reset_index(drop=True, inplace=True)
+X_val_mice_enc =  pd.concat([X_val_mice, ohe_df], axis=1).drop(CATEGORICAL_FEATURES, axis=1)
+#df_train[ohe_columns] = df_test[ohe_columns].astype('bool')
+X_val_mice_enc = my_l_rm_white_space(X_val_mice_enc)
+X_val = X_val_mice_enc
 
+X_val_mice = X_test
+transformed_test = enc_trasformer.transform(X_val_mice[CATEGORICAL_FEATURES])
+ohe_df = pd.DataFrame(transformed_test.toarray(), columns=ohe_columns)
+X_val_mice.reset_index(drop=True, inplace=True)
+ohe_df.reset_index(drop=True, inplace=True)
+X_val_mice_enc =  pd.concat([X_val_mice, ohe_df], axis=1).drop(CATEGORICAL_FEATURES, axis=1)
+#df_train[ohe_columns] = df_test[ohe_columns].astype('bool')
+X_val_mice_enc = my_l_rm_white_space(X_val_mice_enc)
+X_test = X_val_mice_enc
 # ---------- end split train validation ----------
 
 print("Percent of death in original dataset= {0:.2f}".format(y[y == 1].count() / y.count()))
@@ -72,3 +113,4 @@ xgb = xgb_classifier(X_full, y_full)
 y_pred_proba = xgb.predict_proba(X_test)
 from sklearn.metrics import roc_auc_score
 print("FINAL roc_auc: %0.2f " % roc_auc_score(y_test, y_pred_proba[:,1]))
+
