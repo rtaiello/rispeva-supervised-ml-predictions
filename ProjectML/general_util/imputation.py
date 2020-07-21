@@ -19,10 +19,10 @@ def my_l_imp_KNN(dataset):
 
 def my_l_imp_MICE(dataset, strategy="mean"):
     import xgboost
-    estimator = KNeighborsRegressor(n_neighbors=15,n_jobs=-1)
-    regr = MLPRegressor(random_state=SEED, max_iter=500)
-    xgb = xgboost.XGBRegressor(seed=SEED)
-    mice_imputer = IterativeImputer(random_state=SEED, max_iter=20, estimator=estimator, verbose=2, initial_strategy =strategy)
+    from sklearn.linear_model import LinearRegression
+    estimator = KNeighborsRegressor(n_neighbors=25, n_jobs=-1)
+
+    mice_imputer = IterativeImputer(random_state=SEED, max_iter=10, estimator=estimator, verbose=2, initial_strategy =strategy)
     dt_mice = dataset.copy(deep=True)
     print(dt_mice.head())
     dt_mice.iloc[:, :] = mice_imputer.fit_transform(dataset)
