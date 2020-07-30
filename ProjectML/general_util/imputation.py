@@ -18,10 +18,10 @@ def my_l_imp_KNN(dataset):
 
 
 def my_l_imp_MICE(dataset, strategy="mean"):
-    import xgboost
-    from sklearn.linear_model import LinearRegression
-    estimator = KNeighborsRegressor(n_neighbors=25, n_jobs=-1)
+    from sklearn.ensemble import RandomForestRegressor
 
+    estimator = KNeighborsRegressor(n_neighbors=15, n_jobs=-1)
+    regr = RandomForestRegressor(max_depth=4, random_state=SEED,n_jobs=-1,verbose=1)
     mice_imputer = IterativeImputer(random_state=SEED, max_iter=10, estimator=estimator, verbose=2, initial_strategy =strategy)
     dt_mice = dataset.copy(deep=True)
     print(dt_mice.head())

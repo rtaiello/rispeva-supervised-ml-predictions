@@ -1,7 +1,3 @@
-# third part
-import numpy as np
-
-
 def drop_corr_feature(X, threshold):
     col_corr = set()  # Set of all the names of deleted columns
     corr_matrix = X.corr()
@@ -12,9 +8,8 @@ def drop_corr_feature(X, threshold):
                 colname = corr_matrix.columns[i]  # getting the name of column
                 col_corr.add(colname)
                 if colname in X.columns:
-                    X = X.drop(columns=[colname], axis=1)
                     dropped_columns += [colname]
-    return X, dropped_columns
+    return dropped_columns
 
 
 def best_eight_features(X):
@@ -23,37 +18,38 @@ def best_eight_features(X):
                   'Creatinine']]
     return X
 
+
 BEST_FEATURES = ['Creatinine',
- 'modEGFR',
- 'EuroSCOREII',
- 'Hemoglobin',
- 'BMI',
- 'SPAP',
- 'PeakAorticGradient',
- 'SinotubularJunctionDiameter',
- 'LogisticEuroSCORE',
- 'LVEF',
- 'MinAorticAnulus',
- 'BSA',
- 'STSScore',
- 'Albuminemia',
- 'MaxAorticAnulus',
- 'AorticArchMinDiameter',
- 'AscendingAorticMinDiameter',
- 'Age',
- 'Weight',
- 'ValsalvaSinusDiameter',
- 'LeftIliacArteryMinDiameter',
- 'RightIliacArteryMinDiameter',
- 'AorticAnulus',
- 'PeakAorticVelocity',
- 'ValsalvaSinusDimension',
- 'AscendingAorticDimension',
- 'RightFemoralArteryMinDiameter',
- 'AorticValveArea',
- 'MeanAorticGradient',
- 'IndexedAorticValveArea',
- 'MeanAorticAnulus',
- 'Hematocrit',
- 'AorticAnulusPerimeter',
- 'LeftFemoralArteryMinDiameter']
+                 'modEGFR',
+                 'EuroSCOREII',
+                 'Hemoglobin',
+                 'BMI',
+                 'SPAP',
+                 'PeakAorticGradient',
+                 'SinotubularJunctionDiameter',
+                 'LogisticEuroSCORE',
+                 'LVEF',
+                 'MinAorticAnulus',
+                 'BSA',
+                 'STSScore',
+                 'Albuminemia',
+                 'MaxAorticAnulus',
+                 'AorticArchMinDiameter',
+                 'AscendingAorticMinDiameter',
+                 'Age',
+                 'Weight',
+                 'ValsalvaSinusDiameter',
+                 'LeftIliacArteryMinDiameter',
+                 'RightIliacArteryMinDiameter',
+                 'AorticAnulus',
+                 'PeakAorticVelocity',
+                 'ValsalvaSinusDimension',
+                 'AscendingAorticDimension',
+                 'RightFemoralArteryMinDiameter',
+                 'AorticValveArea',
+                 'MeanAorticGradient',
+                 'IndexedAorticValveArea',
+                 'MeanAorticAnulus',
+                 'Hematocrit',
+                 'AorticAnulusPerimeter',
+                 'LeftFemoralArteryMinDiameter']

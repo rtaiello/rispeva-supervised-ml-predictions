@@ -1,6 +1,8 @@
 # third part lib
 from imblearn.over_sampling import SMOTE, ADASYN
 from imblearn.under_sampling import RandomUnderSampler, NearMiss, CondensedNearestNeighbour
+from imblearn.combine import SMOTETomek
+from imblearn.ensemble import BalancedRandomForestClassifier
 
 # constant
 SEED = 42
@@ -20,6 +22,20 @@ def my_l_under_sampling(X, y, percent):
 
 def my_l_SMOTE_sampling(X, y, percent):
     ros = SMOTE(random_state=SEED, sampling_strategy=percent)
+    return my_l_resample(X, y, ros)
+
+
+def my_l_balance_rf(X, y):
+    brf = BalancedRandomForestClassifier(n_estimators=100, random_state=SEED)
+    X_res, y_res = brf.fit(X,y)
+    from collections import Counter
+    print(sorted(Counter(y_res).items()))
+    return X_res, y_res
+
+
+
+def my_l_SMOTTETomek(X, y, percent=1):
+    ros = SMOTETomek(random_state=SEED, sampling_strategy=percent)
     return my_l_resample(X, y, ros)
 
 

@@ -7,18 +7,18 @@ from ProjectML.general_util.imputation import *
 # third part
 import numpy as np
 # Constant
-LABEL = '1monthDeath'
+LABEL = '1_month_Death'
 
 
 def read_dataset(file_path):
     dataset = my_l_read_dataframe(file_path)
-    X = dataset.loc[:, 'CenterID':'P2Y12inhibt']
+    X = dataset.loc[:, 'CenterID':'oral_anticoagulation']
     y = dataset.loc[:, LABEL]
     return pd.concat([X, y], axis=1, sort=False)
 
 
 def extract_feature(dataset):
-    X = dataset.loc[:, 'CenterID':'P2Y12inhibt']
+    X = dataset.loc[:, 'CenterID':'oralanticoagulation']
     y = dataset.loc[:, LABEL]
     X = my_l_rm_white_space(X)
     # X = X.drop(columns=['CenterID', 'PatientID'])

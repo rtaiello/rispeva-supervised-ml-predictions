@@ -23,7 +23,7 @@ def my_l_rm_white_space(dataset):
     regex = re.compile(r"[\[\]<]", re.IGNORECASE)
     dataset.columns = [regex.sub("_", col) if any(x in str(col) for x in {'[', ']', '<'}) else col for col in
                        dataset.columns.values]
-    dataset.columns = dataset.columns.str.replace(' ', '')
+    dataset.columns = dataset.columns.str.replace(' ', '_')
     return dataset
 
 
@@ -42,16 +42,17 @@ def my_l_norm_scaling(X):
     X_scaled[feature_selected.columns] = Normalizer().fit_transform(X_scaled[feature_selected.columns])
     return X_scaled
 
+
 def my_l_log_scaling(feature):
-  from sklearn.preprocessing import PowerTransformer
+    from sklearn.preprocessing import PowerTransformer
 
-  log_trasformer = PowerTransformer() # log transformation
-  target_feature = feature.to_numpy().reshape(-1,1)
+    log_trasformer = PowerTransformer()  # log transformation
+    target_feature = feature.to_numpy().reshape(-1, 1)
 
+    log_trasformer.fit(target_feature)
+    log_scaled_feature = log_trasformer.transform(target_feature)
+    return log_scaled_feature, log_trasformer
 
-  log_trasformer.fit(target_feature)
-  log_scaled_feature = log_trasformer.transform(target_feature)
-  return log_scaled_feature,log_trasformer
 
 def my_l_split(X, y, split_percent):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=split_percent, random_state=SEED,
@@ -95,7 +96,7 @@ def my_l_one_hot_encoding(df, categories):
 
     enc = OneHotEncoder(handle_unknown='ignore')
     enc.fit(df[categories])
-    df = my_l_apply_ohe(df, encoder=enc, categories = categories)
+    df = my_l_apply_ohe(df, encoder=enc, categories=categories)
 
     df_train = my_l_rm_white_space(df)
     return df, enc
@@ -125,19 +126,35 @@ def my_l_apply_ohe(df, encoder, categories):
 
     return df
 
-def my_l_percentile_cut_off(df, feature):
+
+def my_l_percentile_cut_off(df, feature, upper=97.5, lower=2.5, ):
     import numpy as np
-    ninthyseven_ci = np.percentile(df[feature], [2.5, 97.5])
+    ninthyseven_ci = np.percentile(df[feature], [lower, upper])
     mean = np.mean(df[feature])
     cut_off_lower = ninthyseven_ci[0]
     cut_off_upper = ninthyseven_ci[1]
     lower, upper = cut_off_lower, cut_off_upper
     upper_cutted = len(df[(df[feature] > upper) == True])
-    lower_cutted = len(df[(df[feature]< lower) == True])
+    lower_cutted = len(df[(df[feature] < lower) == True])
     print("Number of samples ruled out, cut_off_lower {:d}, cut_of_upper {:d}".format(lower_cutted, upper_cutted))
     return upper, lower
 
-def my_l_cut_off(df,feature,upper,lower):
+
+def my_l_cut_off(df, feature, upper, lower):
     df.loc[df[feature] < lower, feature] = lower
     df.loc[df[feature] > upper, feature] = upper
     return df
+
+
+def my_l_drop_cut_off(df, feature, upper, lower):
+    df = df[df[feature] > lower]
+    df = df[df[feature] < upper]
+    return df
+
+
+def my_l_bucketizer(df, feature, bins, strategy='quantile'):
+    from sklearn.preprocessing import KBinsDiscretizer
+    est = KBinsDiscretizer(n_bins=bins, encode='ordinal', strategy=strategy)
+    est.fit(df.loc[:, [feature]])
+    df[feature] = est.transform(df.loc[:, [feature]])
+    return df, est
